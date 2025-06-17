@@ -28,7 +28,7 @@ docker build -t ollama-proxy .
 ### 2. 运行 Run
 
 ```bash
-docker run -it --rm -p 63000:63000 -e PORT=63000 -e OLLAMA_URL=http://localhost:11434 ollama-proxy
+docker run -d --restart unless-stopped --name ollama-proxy -e PORT=63000 -e OLLAMA_URL=http://localhost:11434 --network=host ollama-proxy
 ```
 
 说明：
@@ -71,73 +71,5 @@ curl -X POST http://localhost:63000/v1/chat/completions \
 ---
 
 ## License
-
-MIT
-
----
-
-# Ollama Proxy Streamer
-
-> 一个基于 Node.js 的轻量级 Ollama 代理，自动在请求体中添加 `stream: true`，实现流式返回。
-
----
-
-## 功能 Features
-
-* 自动给 `/v1/chat/completions` POST 请求体添加 `"stream": true`
-* 通过环境变量自定义 Ollama API 地址
-* 打印请求和响应开始/结束日志，时间为北京时间（UTC+8）
-
----
-
-## 使用示例 Usage
-
-### 构建镜像 Build
-
-```bash
-docker build -t ollama-proxy .
-```
-
-### 运行容器 Run
-
-```bash
-docker run -d --restart unless-stopped --name ollama-proxy -e PORT=63000 -e OLLAMA_URL=http://localhost:11434 --network=host ollama-proxy
-```
-
----
-
-## 如何使用 How to use
-
-代理启动后，将请求发送到代理地址，例如：
-
-```bash
-curl -X POST http://localhost:63000/v1/chat/completions \
-    -H "Content-Type: application/json" \
-    -d '{"model":"deepseek-r1:7b","messages":[{"role":"user","content":"你好"}]}'
-```
-
-代理会自动添加 `"stream": true` 并转发请求，实现流式响应。
-
----
-
-## 项目结构 Project Structure
-
-```
-.
-├── Dockerfile
-├── index.js
-├── package.json
-└── README.md
-```
-
----
-
-## 反馈与贡献 Feedback & Contribution
-
-欢迎提交 Issues 或 Pull Requests！
-
----
-
-## 许可协议 License
 
 MIT
